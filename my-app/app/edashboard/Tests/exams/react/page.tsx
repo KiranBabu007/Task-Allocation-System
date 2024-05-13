@@ -6,128 +6,138 @@ import { Button } from '@/components/ui/button';
 
 const questions = [
     {
-        question: 'What is the output of print(2 + 3)?',
-        options: ['3', '5', '6', '7'],
-        answer: '5',
+        question: 'What does JSX stand for in React.js?',
+        options: ['JavaScript XML', 'JavaScript Extension', 'JSON XML', 'Java Standard Extension'],
+        answer: 'JavaScript XML',
     },
     {
-        question: 'What is the correct way to define a function in Python?',
+        question: 'Which lifecycle method is called once a component is mounted on the DOM in React.js?',
+        options: ['componentDidMount()', 'componentWillMount()', 'render()', 'componentDidUpdate()'],
+        answer: 'componentDidMount()',
+    },
+    {
+        question: 'What is the purpose of state in React.js?',
         options: [
-            'def function_name(parameters):',
-            'function function_name(parameters)',
-            'create function_name(parameters)',
-            'define function_name(parameters)',
+            'To store mutable data that affects a component\'s rendering',
+            'To define static data for a component',
+            'To handle routing in React',
+            'To store CSS styles for a component',
         ],
-        answer: 'def function_name(parameters):',
+        answer: 'To store mutable data that affects a component\'s rendering',
     },
     {
-        question: 'What is the purpose of the "self" keyword in Python?',
+        question: 'What is the difference between props and state in React.js?',
         options: [
-            'To refer to the current instance of a class',
-            'To define a static variable',
-            'To create a new object',
-            'To import a module',
-        ],
-        answer: 'To refer to the current instance of a class',
-    },
-    {
-        question: 'What is the difference between a list and a tuple in Python?',
-        options: [
-            'Lists are mutable, while tuples are immutable',
-            'Tuples are mutable, while lists are immutable',
+            'Props are read-only, state is mutable',
+            'State is passed from parent components, props are defined within the component',
             'There is no difference',
-            'Tuples can only store numbers, while lists can store any data type',
+            'Props are mutable, state is read-only',
         ],
-        answer: 'Lists are mutable, while tuples are immutable',
+        answer: 'Props are read-only, state is mutable',
     },
     {
-        question: 'What is the output of print(len("Hello, World!"))?',
-        options: ['12', '13', '14', '15'],
-        answer: '13',
-    },
-    {
-        question: 'What is the purpose of the "pass" statement in Python?',
+        question: 'What is the purpose of the "render()" method in React.js components?',
         options: [
-            'To skip over a block of code',
-            'To define a new function',
-            'To exit a loop',
-            'To create an empty class or function',
+            'To return JSX that represents the component\'s UI',
+            'To define CSS styles for the component',
+            'To handle component state changes',
+            'To handle component props',
         ],
-        answer: 'To create an empty class or function',
+        answer: 'To return JSX that represents the component\'s UI',
     },
     {
-        question: 'What is the output of print(2**3)?',
-        options: ['6', '8', '9', '12'],
-        answer: '8',
-    },
-    {
-        question: 'What is the purpose of the "if __name__ == "__main__":" statement in Python?',
+        question: 'What is the purpose of keys in React.js when rendering lists?',
         options: [
-            'To define the entry point of a program',
-            'To create a new module',
-            'To import a module',
-            'To define a class',
+            'To uniquely identify list items and optimize re-rendering',
+            'To apply CSS styles to list items',
+            'To define the order of list items',
+            'To determine the length of the list',
         ],
-        answer: 'To define the entry point of a program',
+        answer: 'To uniquely identify list items and optimize re-rendering',
     },
     {
-        question: 'What is the output of print(round(3.14159, 2))?',
-        options: ['3.14', '3.15', '3.1', '3.142'],
-        answer: '3.14',
-    },
-    {
-        question: 'What is the purpose of the "try/except" block in Python?',
+        question: 'What is the correct way to update state in React.js?',
         options: [
-            'To handle exceptions',
-            'To define a new function',
-            'To create a new class',
-            'To import a module',
+            'Using the setState() method',
+            'Directly modifying the state object',
+            'Using the props() method',
+            'State cannot be updated in React.js',
         ],
-        answer: 'To handle exceptions',
+        answer: 'Using the setState() method',
     },
     {
-        question: 'What is the output of print(sum(range(1, 11)))?',
-        options: ['45', '55', '65', '75'],
-        answer: '55',
-    },
-    {
-        question: 'What is the purpose of the "lambda" keyword in Python?',
+        question: 'What is the purpose of React.js Hooks?',
         options: [
-            'To create anonymous functions',
-            'To define a new class',
-            'To import a module',
-            'To create a list comprehension',
+            'To add state and other features to functional components',
+            'To define class components in React',
+            'To handle asynchronous operations in React',
+            'To create custom hooks for data fetching',
         ],
-        answer: 'To create anonymous functions',
+        answer: 'To add state and other features to functional components',
     },
     {
-        question: 'What is the purpose of the "zip()" function in Python?',
+        question: 'What is the output of console.log(typeof useState()) in React.js?',
+        options: ['"object"', '"array"', '"string"', '"number"'],
+        answer: '"object"',
+    },
+    {
+        question: 'What is the purpose of the useEffect() hook in React.js?',
         options: [
-            'To combine two or more iterables into a single iterable',
-            'To create a new list',
-            'To sort a list',
-            'To convert a string to a list',
+            'To perform side effects in function components',
+            'To update component state',
+            'To define event listeners in class components',
+            'To handle routing in React.js',
         ],
-        answer: 'To combine two or more iterables into a single iterable',
+        answer: 'To perform side effects in function components',
     },
     {
-        question: 'What is the output of print(3 // 2)?',
-        options: ['1', '1.5', '2', '2.0'],
-        answer: '1',
-    },
-    {
-        question: 'What is the purpose of the "with" statement in Python?',
+        question: 'What is a React.js component?',
         options: [
-            'To handle file operations more efficiently',
-            'To define a new function',
-            'To create a new class',
-            'To import a module',
+            'A reusable piece of UI that can contain HTML, CSS, and JavaScript logic',
+            'A function used to fetch data from an API',
+            'A tool for handling CSS styles in React',
+            'A built-in React feature for state management',
         ],
-        answer: 'To handle file operations more efficiently',
+        answer: 'A reusable piece of UI that can contain HTML, CSS, and JavaScript logic',
+    },
+    {
+        question: 'What is the purpose of React Router in React.js?',
+        options: [
+            'To handle client-side routing',
+            'To manage component state',
+            'To optimize performance',
+            'To create custom hooks',
+        ],
+        answer: 'To handle client-side routing',
+    },
+    {
+        question: 'What is the purpose of propTypes in React.js?',
+        options: [
+            'To validate the types of props passed to a component',
+            'To define CSS styles for a component',
+            'To manage component state',
+            'To handle asynchronous operations',
+        ],
+        answer: 'To validate the types of props passed to a component',
+    },
+    {
+        question: 'What is the output of console.log(React.version) in React.js?',
+        options: ['The current version of React.js', 'An error message', 'The browser version', 'Undefined'],
+        answer: 'The current version of React.js',
+    },
+    {
+        question: 'What is the purpose of React Context in React.js?',
+        options: [
+            'To share data between components without having to pass props manually',
+            'To define the structure of a component',
+            'To handle component state changes',
+            'To manage asynchronous operations',
+        ],
+        answer: 'To share data between components without having to pass props manually',
     },
 ];
 
-const PythonTestPage = () => {
+const Page = () => {
     const [answers, setAnswers] = useState<string[]>([]);
     const [showResult, setShowResult] = useState(false);
     const [score, setScore] = useState(0);
@@ -188,4 +198,4 @@ const PythonTestPage = () => {
     );
 };
 
-export default PythonTestPage;
+export default Page;
