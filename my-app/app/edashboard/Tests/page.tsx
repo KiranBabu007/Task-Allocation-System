@@ -20,7 +20,7 @@ interface ThreeDCardDemoProps {
 
 export function ThreeDCardDemo({ imageSource, description, heading }: ThreeDCardDemoProps) {
   return (
-    <CardContainer className="inter-var">
+    <CardContainer className="inter-var py-2">
       <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto max-w-sm h-auto rounded-xl px-2 py-1 border ">
         <CardItem
           translateZ="50"
@@ -61,10 +61,11 @@ export function ThreeDCardDemo({ imageSource, description, heading }: ThreeDCard
 const Page = () => {
   return (
     <div className="flex flex-col items-center p-8">
-      <h1 className="text-4xl font-bold mb-4 text-left">Test Your Skills</h1>
-      <div className="flex flex-wrap justify-evenly gap-2">
-        <div className="flex flex-nowrap justify-between w-full">
+      <h1 className="text-4xl font-bold mb-2 text-left">Test Your Skills</h1>
+      <div className="flex flex-wrap ">
+        <div className="flex justify-between w-full">
           <ThreeDCardDemo
+
             imageSource={pythonImage}
             description="Prepare thoroughly and practice diligently before your test."
             heading="Python Programming"
@@ -82,7 +83,7 @@ const Page = () => {
             heading="Artificial Intelligence"
           />
         </div>
-        <div className="flex flex-nowrap justify-between w-full mt-4">
+        <div className="flex flex-nowrap justify-between w-full">
           <ThreeDCardDemo
             imageSource={image4}
             description="React.js test. Showcase your proficiency in building modern web applications."
