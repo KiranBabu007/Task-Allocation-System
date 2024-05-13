@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState } from 'react';
-import {app,firestore,storage} from '@/firebaseConfig'
+import React, { useState, useEffect } from 'react';
+import { app, firestore, storage } from '@/firebaseConfig';
+import { getAuth } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import {
     Label
 } from '@/components/ui/label'
@@ -14,12 +16,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-
-
-
-
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 const Page = () => {
     const [employee, setEmployee] = useState({
@@ -31,7 +30,28 @@ const Page = () => {
         startDate: '2022-01-01',
     });
 
-    const handleChange = (e: any) => {
+    const [profileImageUrl, setProfileImageUrl] = useState('');
+
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const storageRef = ref(storage, 'files');
+                const result = await listAll(storageRef);
+                const imageRef = result.items[0]; // Assuming there is at least one image
+
+                if (imageRef) {
+                    const imageUrl = await getDownloadURL(imageRef);
+                    setProfileImageUrl(imageUrl);
+                }
+            } catch (error) {
+                console.error('Error fetching profile image:', error);
+            }
+        };
+
+        fetchProfileImage();
+    }, []);
+
+    const handleChange = (e:any) => {
         setEmployee({ ...employee, [e.target.name]: e.target.value });
     };
 
@@ -46,21 +66,50 @@ const Page = () => {
         });
     };
 
+    const handleSave = async () => {
+        try {
+            // Get the current user ID
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            const currentUserId = currentUser ? currentUser.uid : null;
+
+            if (!currentUserId) {
+                console.error('No user is currently signed in.');
+                return;
+            }
+
+            // Create a reference to the document with the current user ID
+            const employeeDocRef = doc(firestore, 'employees', currentUserId);
+
+            // Update the document with the employee data
+            await setDoc(employeeDocRef, employee);
+
+            console.log('Employee data saved successfully!');
+        } catch (error) {
+            console.error('Error saving employee data:', error);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
-            <Card className="w-[100%] bg-gradient-to-br from-blue-500 to-purple-500">
+            <Card className="w-[100%] ">
                 <CardHeader className="relative">
-
                     <div className="bg-blue-500 h-32 rounded-t-lg">
-                        <Avatar >
-                            <AvatarImage src="/profile-picture.jpg" alt="User Profile" />
-                            <AvatarFallback>JD</AvatarFallback>
+                        
+                        <Avatar className='h-20 w-20'>
+                            {profileImageUrl ? (
+                                <AvatarImage  src={profileImageUrl} alt="User Profile"  />
+                            ) : (
+                                <div className="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
+                                    <span className="text-gray-600 text-xl">JD</span>
+                                </div>
+                            )}
                         </Avatar>
                     </div>
                 </CardHeader>
-                <CardContent className="mt-16">
+                <CardContent className="mt-8">
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="name" className="text-right  m-4">
                                 Name
                             </Label>
@@ -71,7 +120,7 @@ const Page = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="position" className=" m-4">
                                 Position
                             </Label>
@@ -93,7 +142,7 @@ const Page = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="email" className="  m-4">
                                 Email
                             </Label>
@@ -132,7 +181,9 @@ const Page = () => {
                 </CardContent>
                 <CardFooter className="flex justify-end gap-4">
                     <Button onClick={resetDetails}>Reset</Button>
-                    <Button variant="outline">Save</Button>
+                    <Button variant="outline" onClick={handleSave}>
+                        Save
+                    </Button>
                 </CardFooter>
             </Card>
         </div>
