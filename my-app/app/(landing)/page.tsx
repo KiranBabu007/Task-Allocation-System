@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 
 
 export default function Home() {
@@ -12,7 +14,7 @@ export default function Home() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("Form submitted");
-        router.push("/dashboard"); // Navigate to the dashboard page
+        router.push("/edashboard"); // Navigate to the dashboard page
     };
 
     return (
@@ -25,7 +27,7 @@ export default function Home() {
                         className="w-full h-auto object-cover rounded-lg"
                     />
                 </div>
-                {/* Right Side */}
+
                 <div className="flex-1 max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
                     <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                         Welcome to Task Allocator
@@ -35,29 +37,39 @@ export default function Home() {
                         login flow yet
                     </p>
 
-                    <form className="my-8" onSubmit={handleSubmit}>
-                        <LabelInputContainer className="mb-4">
-                            <Label htmlFor="name">Name</Label>
-                            <Input id="name" placeholder="Your Name" type="text" />
-                        </LabelInputContainer>
-                        <LabelInputContainer className="mb-4">
-                            <Label htmlFor="email">Email Address</Label>
-                            <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
-                        </LabelInputContainer>
-                        <LabelInputContainer className="mb-4">
-                            <Label htmlFor="password">Password</Label>
-                            <Input id="password" placeholder="••••••••" type="password" />
-                        </LabelInputContainer>
+                    <Tabs defaultValue="account" className="w-[400px]">
+                        <TabsList>
+                            <TabsTrigger value="account">Account</TabsTrigger>
+                            <TabsTrigger value="password">Password</TabsTrigger>
+                        </TabsList>
+                        <form className="my-8" onSubmit={handleSubmit}>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="name">Name</Label>
+                                <Input id="name" placeholder="Your Name" type="text" />
+                            </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
+                            </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="password">Password</Label>
+                                <Input id="password" placeholder="••••••••" type="password" />
+                            </LabelInputContainer>
 
-                        <button
-                            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-                            type="submit"
-                            onClick={() => router.push("/edashboard")}
-                        >
-                            Sign up &rarr;
-                            <BottomGradient />
-                        </button>
-                    </form>
+                            <button
+                                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                                type="submit"
+
+                            >
+                                Sign up &rarr;
+                                <BottomGradient />
+                            </button>
+                        </form>
+
+                    </Tabs>
+
+
+
                 </div>
             </div>
         </main>
