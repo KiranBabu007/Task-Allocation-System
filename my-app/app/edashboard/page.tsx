@@ -47,7 +47,7 @@ const Page = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
-            <Card className="w-[100%] bg-gradient-to-br from-blue-500 to-purple-500">
+            <Card className="w-[100%] ">
                 <CardHeader className="relative">
 
                     <div className="bg-blue-500 h-32 rounded-t-lg">
@@ -57,9 +57,9 @@ const Page = () => {
                         </Avatar>
                     </div>
                 </CardHeader>
-                <CardContent className="mt-16">
+                <CardContent className="mt-8">
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="name" className="text-right  m-4">
                                 Name
                             </Label>
@@ -70,7 +70,7 @@ const Page = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="position" className=" m-4">
                                 Position
                             </Label>
@@ -92,7 +92,7 @@ const Page = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center ">
                             <Label htmlFor="email" className="  m-4">
                                 Email
                             </Label>
