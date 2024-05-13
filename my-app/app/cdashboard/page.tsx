@@ -1,45 +1,93 @@
 'use client'
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { firestore } from '@/firebaseConfig';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Label } from '@/components/ui/label';
 import { Input } from "@/components/ui/input";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 
 const CompanyProfilePage = () => {
     const [companyDetails, setCompanyDetails] = useState({
-        name: 'Acme Corporation',
-        industry: 'Technology',
-        founded: '1985',
-        headquarters: 'San Francisco, CA, USA',
-        website: 'https://acme.com',
-        description: 'Acme Corporation is a leading technology company focused on developing innovative software solutions.',
+        name: '',
+        industry: '',
+        founded: '',
+        headquarters: '',
+        website: '',
+        description: '',
         isPublic: true,
     });
 
-    const handleChange = (e:any) => {
+    useEffect(() => {
+        const fetchCompanyData = async () => {
+            try {
+                const auth = getAuth();
+                const currentUser = auth.currentUser;
+                const currentUserId = currentUser ? currentUser.uid : null;
+
+                if (currentUserId) {
+                    const companyDocRef = doc(firestore, 'companies', currentUserId);
+                    const companySnapshot = await getDoc(companyDocRef);
+
+                    if (companySnapshot.exists()) {
+                        const companyData = companySnapshot.data();
+                        setCompanyDetails(companyData);
+                    } else {
+                        console.log('No company data found for the current user.');
+                    }
+                } else {
+                    console.error('No user is currently signed in.');
+                }
+            } catch (error) {
+                console.error('Error fetching company data:', error);
+            }
+        };
+
+        fetchCompanyData();
+    }, []);
+
+    const handleChange = (e) => {
         setCompanyDetails({ ...companyDetails, [e.target.name]: e.target.value });
     };
 
     const resetDetails = () => {
         setCompanyDetails({
-            name: 'Acme Corporation',
-            industry: 'Technology',
-            founded: '1985',
-            headquarters: 'San Francisco, CA, USA',
-            website: 'https://acme.com',
-            description: 'Acme Corporation is a leading technology company focused on developing innovative software solutions.',
+            name: '',
+            industry: '',
+            founded: '',
+            headquarters: '',
+            website: '',
+            description: '',
             isPublic: true,
         });
+    };
+
+    const handleSave = async () => {
+        try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            const currentUserId = currentUser ? currentUser.uid : null;
+
+            if (!currentUserId) {
+                console.error('No user is currently signed in.');
+                return;
+            }
+
+            const companyDocRef = doc(firestore, 'companies', currentUserId);
+            await setDoc(companyDocRef, companyDetails);
+
+            console.log('Company data saved successfully!');
+        } catch (error) {
+            console.error('Error saving company data:', error);
+        }
     };
 
     return (
@@ -48,8 +96,7 @@ const CompanyProfilePage = () => {
                 <CardHeader className="relative">
                     <div className="bg-blue-500 h-48 rounded-t-lg"></div>
                     <Avatar className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-                        <AvatarImage src="/company-logo.png" alt="Company Logo" />
-                       
+                        {/* No image rendering */}
                     </Avatar>
                 </CardHeader>
                 <CardContent className="mt-16">
@@ -121,22 +168,13 @@ const CompanyProfilePage = () => {
                                 className="flex-1 rounded-md border-input border bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             />
                         </div>
-                        <Separator />
-                        <div className="flex items-center justify-between">
-                            <Label>Public Profile</Label>
-                            <Switch
-                                id="public"
-                                checked={companyDetails.isPublic}
-                                onCheckedChange={(checked:boolean) =>
-                                    setCompanyDetails({ ...companyDetails, isPublic: checked })
-                                }
-                            />
-                        </div>
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-end gap-4">
                     <Button onClick={resetDetails}>Reset</Button>
-                    <Button variant="outline">Save</Button>
+                    <Button variant="outline" onClick={handleSave}>
+                        Save
+                    </Button>
                 </CardFooter>
             </Card>
         </div>
