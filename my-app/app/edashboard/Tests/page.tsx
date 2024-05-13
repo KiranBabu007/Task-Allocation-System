@@ -80,14 +80,14 @@ const Page = () => {
             imageSource={image2}
             description="Java programming language test. Be prepared for various concepts and challenges."
             heading="Java Programming"
-            testRoute="/edashboard"
+            testRoute="java"
           />
           <div className="mx-2"></div>
           <ThreeDCardDemo
             imageSource={image3}
             description="Artificial Intelligence test. Demonstrate your knowledge and problem-solving skills."
             heading="Artificial Intelligence"
-            testRoute="/edashboard"
+            testRoute="AI"
           />
         </div>
         <div className="flex flex-nowrap justify-between w-full">
@@ -95,21 +95,21 @@ const Page = () => {
             imageSource={image4}
             description="React.js test. Showcase your proficiency in building modern web applications."
             heading="React.js"
-            testRoute="/edashboard"
+            testRoute="react"
           />
           <div className="mx-2"></div>
           <ThreeDCardDemo
             imageSource={image5}
             description="C programming language test. Prove your understanding of low-level programming concepts."
             heading="C Programming"
-            testRoute="/edashboard"
+            testRoute="c"
           />
           <div className="mx-2"></div>
           <ThreeDCardDemo
             imageSource={image6}
             description="JavaScript test. Evaluate your skills in this versatile programming language."
             heading="JavaScript"
-            testRoute="/edashboard"
+            testRoute="js"
           />
         </div>
       </div>
