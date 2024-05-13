@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { getDownloadURL, ref } from "firebase/storage";
 
 const Page = () => {
-    const [employee, setEmployee] = useState<EmployeeData>({
+    const [employee, setEmployee] = useState({
         name: '',
         position: '',
         department: '',
