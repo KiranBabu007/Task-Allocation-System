@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import {app,firestore,storage} from '@/firebaseConfig'
 import {
     Label
 } from '@/components/ui/label'
