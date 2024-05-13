@@ -2,32 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { app, firestore, storage } from '@/firebaseConfig';
-import { getAuth } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import {
-    Label
-} from '@/components/ui/label'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { Label } from '@/components/ui/label'
 import { Input } from "@/components/ui/input"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const Page = () => {
-    const [employee, setEmployee] = useState({
-        name: 'John Doe',
-        position: 'Software Engineer',
-        department: 'Engineering',
-        email: 'john.doe@example.com',
-        phoneNumber: '+1234567890',
-        startDate: '2022-01-01',
+    const [employee, setEmployee] = useState<EmployeeData>({
+        name: '',
+        position: '',
+        department: '',
+        email: '',
+        phoneNumber: '',
+        startDate: ''
     });
 
     const [profileImageUrl, setProfileImageUrl] = useState('');
@@ -35,13 +26,16 @@ const Page = () => {
     useEffect(() => {
         const fetchProfileImage = async () => {
             try {
-                const storageRef = ref(storage, 'files');
-                const result = await listAll(storageRef);
-                const imageRef = result.items[0]; // Assuming there is at least one image
+                const auth = getAuth();
+                const currentUser = auth.currentUser;
+                const currentUserId = currentUser ? currentUser.uid : null;
 
-                if (imageRef) {
+                if (currentUserId) {
+                    const imageRef = ref(storage,`files/${currentUserId}.jpg`);
                     const imageUrl = await getDownloadURL(imageRef);
                     setProfileImageUrl(imageUrl);
+                } else {
+                    console.error('No user is currently signed in.');
                 }
             } catch (error) {
                 console.error('Error fetching profile image:', error);
@@ -51,18 +45,46 @@ const Page = () => {
         fetchProfileImage();
     }, []);
 
+    useEffect(() => {
+        const fetchEmployeeData = async () => {
+            try {
+                const auth = getAuth();
+                const currentUser = auth.currentUser;
+                const currentUserId = currentUser ? currentUser.uid : null;
+
+                if (currentUserId) {
+                    const employeeDocRef = doc(firestore, 'employees', currentUserId);
+                    const employeeSnapshot = await getDoc(employeeDocRef);
+
+                    if (employeeSnapshot.exists()) {
+                        const employeeData = employeeSnapshot.data();
+                        setEmployee(employeeData);
+                    } else {
+                        console.log('No employee data found for the current user.');
+                    }
+                } else {
+                    console.error('No user is currently signed in.');
+                }
+            } catch (error) {
+                console.error('Error fetching employee data:', error);
+            }
+        };
+
+        fetchEmployeeData();
+    }, []);
+
     const handleChange = (e: any) => {
         setEmployee({ ...employee, [e.target.name]: e.target.value });
     };
 
     const resetDetails = () => {
         setEmployee({
-            name: 'John Doe',
-            position: 'Software Engineer',
-            department: 'Engineering',
-            email: 'john.doe@example.com',
-            phoneNumber: '+1234567890',
-            startDate: '2022-01-01',
+            name: '',
+            position: '',
+            department: '',
+            email: '',
+            phoneNumber: '',
+            startDate: '',
         });
     };
 
@@ -96,13 +118,11 @@ const Page = () => {
                 <CardHeader className="relative">
                     <div className="bg-blue-500 h-32 rounded-t-lg">
                         <div className='h-full w-32'>
-                            <Avatar className='h-20 w-20'>
+                            <Avatar className='h-30 w-30'>
                                 {profileImageUrl ? (
-                                    <AvatarImage src={profileImageUrl} alt="User Profile" />
+                                    <AvatarImage className='object-contain' src={profileImageUrl} alt="User Profile" />
                                 ) : (
-                                    <div className="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
-                                        <span className="text-gray-600 text-xl">JD</span>
-                                    </div>
+                                    <></>
                                 )}
                             </Avatar>
                         </div>

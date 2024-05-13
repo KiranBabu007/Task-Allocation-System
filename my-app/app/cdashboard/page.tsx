@@ -50,7 +50,7 @@ const CompanyProfilePage = () => {
                     <div className="bg-blue-500 h-48 rounded-t-lg"></div>
                     <Avatar className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
                         <AvatarImage src="/company-logo.png" alt="Company Logo" />
-                        <AvatarFallback>AC</AvatarFallback>
+                       
                     </Avatar>
                 </CardHeader>
                 <CardContent className="mt-16">
