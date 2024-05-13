@@ -12,7 +12,7 @@ export default function Home() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("Form submitted");
-        router.push("/dashboard"); // Navigate to the dashboard page
+        router.push("/edashboard"); // Navigate to the dashboard page
     };
 
     return (
