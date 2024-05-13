@@ -46,7 +46,7 @@ export function ThreeDCardDemo({ imageSource, description, heading, testRoute }:
           />
         </CardItem>
         <div className="flex justify-between items-center mt-4">
-          <Link href={testRoute}>
+          <Link href={`/edashboard/Tests/exams/${testRoute}`}>
 
             <CardItem
               translateZ={20}
@@ -73,7 +73,7 @@ const Page = () => {
             imageSource={pythonImage}
             description="Prepare thoroughly and practice diligently before your test."
             heading="Python Programming"
-            testRoute="/edashboard/Tests/exams/python"
+            testRoute="python"
           />
           <div className="mx-2"></div>
           <ThreeDCardDemo
