@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useEffect } from 'react';
 import { app, firestore } from '@/firebaseConfig';
-import { addDoc, collection, getDocs, updateDoc, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, updateDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const skillOptions = ['React', 'Java', 'C', 'Python', 'AI/ML', 'JavaScript'];
@@ -24,31 +24,71 @@ const assignProject = async (project, setProjects) => {
         // Map to store the maximum score for each skill
         const maxScores = {};
 
-        // Find the maximum score for each required skill
+        // Map to store the next highest score for each skill
+        const nextScores = {};
+
+        // Find the maximum and next highest scores for each required skill
         testResultsSnapshot.forEach((doc) => {
             const testResult = doc.data();
             requiredSkills.forEach((skill) => {
-                const score = testResult[skill] || 0; // Handle cases where the skill is not present
+                const score = testResult[skill] || 0;
                 if (!maxScores[skill] || score > maxScores[skill].score) {
+                    nextScores[skill] = maxScores[skill];
                     maxScores[skill] = { userId: doc.id, score };
+                } else if (!nextScores[skill] || score > nextScores[skill].score) {
+                    nextScores[skill] = { userId: doc.id, score };
                 }
             });
         });
 
         // Assign the project to the user(s) with the maximum score for each required skill
-        const assignedEmployees = {};
-        requiredSkills.forEach((skill) => {
-            if (maxScores[skill]) {
-                const userId = maxScores[skill].userId;
-                assignedEmployees[userId] = assignedEmployees[userId] || { userId, skills: {} };
-                assignedEmployees[userId].skills[skill] = maxScores[skill].score;
-            }
-        });
+        // If the user with the maximum score is already assigned, assign to the user with the next highest score
+        const assignedEmployees = await Promise.all(
+            requiredSkills.map(async (skill) => {
+                if (maxScores[skill]) {
+                    const userId = maxScores[skill].userId;
+
+                    // Check if the user already has a project assigned
+                    const employeeprojectsCollection = collection(firestore, 'employeeprojects');
+                    const employeeprojectDoc = await getDoc(doc(employeeprojectsCollection, userId));
+
+                    if (employeeprojectDoc.exists()) {
+                        console.log(`User ${userId} already has a project assigned. Assigning to next best candidate.`);
+
+                        // Assign to the user with the next highest score for this skill
+                        if (nextScores[skill]) {
+                            const nextUserId = nextScores[skill].userId;
+                            const nextEmployeeprojectDoc = await getDoc(doc(employeeprojectsCollection, nextUserId));
+
+                            if (nextEmployeeprojectDoc.exists()) {
+                                console.log(`Next best candidate ${nextUserId} also has a project assigned. Skipping this skill.`);
+                                return null;
+                            } else {
+                                const assignedEmployee = { userId: nextUserId, skills: {} };
+                                assignedEmployee.skills[skill] = nextScores[skill].score;
+                                return assignedEmployee;
+                            }
+                        } else {
+                            console.log(`No other candidates available for skill ${skill}. Skipping this skill.`);
+                            return null;
+                        }
+                    } else {
+                        const assignedEmployee = { userId, skills: {} };
+                        assignedEmployee.skills[skill] = maxScores[skill].score;
+                        return assignedEmployee;
+                    }
+                }
+                return null;
+            })
+        );
 
         // Display assigned employees information as an alert
-        const alertMessage = Object.keys(assignedEmployees).map((userId) => {
-            return `Employee ID: ${userId}, Skills: ${Object.keys(assignedEmployees[userId].skills).join(', ')}`;
-        }).join('\n');
+        const alertMessage = assignedEmployees
+            .filter((employee) => employee !== null)
+            .map((employee) => {
+                return `Employee ID: ${employee.userId}, Skills: ${Object.keys(employee.skills).join(', ')}`;
+            })
+            .join('\n');
 
         alert(`Assigned Employees:\n${alertMessage}`);
 
@@ -66,14 +106,16 @@ const assignProject = async (project, setProjects) => {
         const employeeprojectsCollection = collection(firestore, 'employeeprojects');
 
         // Loop through assigned employees and add their data to the collection
-        for (const userId in assignedEmployees) {
-            const employeeData = {
-                projectId: project.id,
-                projectName: project.name,
-                skills: assignedEmployees[userId].skills
-            };
-            const docRef = doc(employeeprojectsCollection, userId);
-            await setDoc(docRef, employeeData);
+        for (const assignedEmployee of assignedEmployees) {
+            if (assignedEmployee !== null) {
+                const employeeData = {
+                    projectId: project.id,
+                    projectName: project.name,
+                    skills: assignedEmployee.skills
+                };
+                const docRef = doc(employeeprojectsCollection, assignedEmployee.userId);
+                await setDoc(docRef, employeeData);
+            }
         }
 
     } catch (error) {
@@ -161,15 +203,15 @@ const Page = () => {
                             </div>
                             {project.assignedEmployees && (
                                 <div className="mt-2">
-                                    <span className="font-semibold mb-2 font-sans">Assigned Employees:</span>
-                                    <div className="flex flex-wrap gap-1 font-mono">
-                                        {Object.values(project.assignedEmployees).map((employee) => (
-                                            <span key={employee.userId} className="rounded bg-gray-200 px-2 py-1 text-xs m-5">
-                                                Employee ID: {employee.userId}, Skills: {Object.keys(employee.skills).join(', ')}
-                                            </span>
-                                        ))}
-                                    </div>
+                                <span className="font-semibold mb-2 font-sans">Assigned Employees:</span>
+                                <div className="flex flex-wrap gap-1 font-mono">
+                                    {Object.values(project.assignedEmployees || {}).map((employee) => (
+                                        <span key={employee?.userId} className="rounded bg-gray-200 px-2 py-1 text-xs m-5">
+                                            Employee ID: {employee?.userId}, Skills: {employee?.skills ? Object.keys(employee.skills).join(', ') : ''}
+                                        </span>
+                                    ))}
                                 </div>
+                            </div>
                             )}
                             <Button onClick={() => assignProject(project, setProjects)}>Assign Project</Button>
                         </div>
