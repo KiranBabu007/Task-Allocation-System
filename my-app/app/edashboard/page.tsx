@@ -116,17 +116,23 @@ const Page = () => {
         <div className="flex flex-col items-center justify-center min-h-screen">
             <Card className="w-[100%] ">
                 <CardHeader className="relative">
-                    <div className="bg-blue-500 h-32 rounded-t-lg">
-                        <div className='h-full w-32'>
-                            <Avatar className='h-30 w-30'>
-                                {profileImageUrl ? (
-                                    <AvatarImage className='object-contain' src={profileImageUrl} alt="User Profile" />
-                                ) : (
-                                    <></>
-                                )}
-                            </Avatar>
-                        </div>
-                    </div>
+                <div className="bg-blue-500 h-32 rounded-lg relative">
+    <div className='h-full w-32 absolute z-10'>
+        <Avatar className='h-30 w-30'>
+            {profileImageUrl ? (
+                <AvatarImage className='object-contain' src={profileImageUrl} alt="User Profile" />
+            ) : (
+                <></>
+            )}
+        </Avatar>
+    </div>
+    <div
+        className="absolute inset-0 bg-cover bg-center rounded-lg"
+        style={{
+            backgroundImage: "url('./profile.png')"
+        }}
+    />
+</div>
                 </CardHeader>
                 <CardContent className="mt-8">
                     <div className="space-y-4">
