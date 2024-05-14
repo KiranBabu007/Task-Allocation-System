@@ -7,6 +7,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "@/firebaseConfig";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { motion } from "framer-motion";
+
 import {
   Tabs,
   TabsContent,
@@ -14,6 +15,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+
 export default function Home() {
   const router = useRouter();
   const auth = getAuth(app);
@@ -60,14 +62,23 @@ export default function Home() {
             duration: 0.5,
             ease: [0.4, 0.0, 0.2, 1],
           }}
-          className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto"
+          className="text-2xl px-4 md:text-2xl lg:text-3xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto"
         >
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5">
+            Task Allocator
+          </h1>
           With Task Allocator, efficiency is real. Fair distribution is within reach. It's a perfect match, of {" "}
           <Highlight className="text-black dark:text-white">
-          skills, of workload, of availability.
+            skills, of workload, of availability.
           </Highlight>
         </motion.h1>
       </HeroHighlight>
+      {/* <Image
+        src={url("../landing.png")}
+        width={500}
+        height={500}
+        alt="Picture of the author"
+      /> */}
       <div className="flex-1 max-w-md w-full rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black mx-8">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome to Task Allocator
