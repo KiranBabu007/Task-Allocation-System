@@ -112,9 +112,9 @@ const Page = () => {
                 <CardHeader className="relative">
                     <div className="bg-blue-500 h-32 rounded-lg relative">
                         <div className='h-full w-32 absolute z-10'>
-                            <Avatar className='h-30 w-30'>
+                            <Avatar className='h-20 w-20'>
                                 {profileImageUrl ? (
-                                    <AvatarImage className='object-contain' src={profileImageUrl} alt="User Profile" />
+                                    <AvatarImage className='object-cover h-20 w-20 m-5' src={profileImageUrl} alt="User Profile" />
                                 ) : (
                                     <></>
                                 )}
