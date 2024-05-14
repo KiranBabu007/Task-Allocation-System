@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { getDownloadURL, ref } from "firebase/storage";
-
+import ChatBot from '@/components/ui/ChatBot';
 const Page = () => {
     const [employee, setEmployee] = useState({
         name: '',
@@ -213,6 +213,7 @@ const Page = () => {
                     </Button>
                 </CardFooter>
             </Card>
+            <ChatBot />
         </div>
     );
 };
