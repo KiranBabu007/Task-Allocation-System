@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { app, firestore } from '@/firebaseConfig';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 const questions = [
     {
@@ -141,6 +144,19 @@ const Page = () => {
     const [answers, setAnswers] = useState<string[]>([]);
     const [showResult, setShowResult] = useState(false);
     const [score, setScore] = useState(0);
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+            if (user) {
+                setUserId(user.uid);
+            } else {
+                setUserId('');
+            }
+        });
+
+        return unsubscribe;
+    }, []);
 
     const handleCheckboxChange = (optionIndex: number, questionIndex: number) => {
         const updatedAnswers = [...answers];
@@ -157,6 +173,22 @@ const Page = () => {
         });
         setScore(currentScore);
         setShowResult(true);
+
+        if (userId) {
+            updateTestResultInFirestore(currentScore);
+        } else {
+            console.error('No user is currently signed in.');
+        }
+    };
+
+    const updateTestResultInFirestore = async (score: number) => {
+        try {
+            const testResultRef = doc(firestore, 'testresults', userId);
+            await updateDoc(testResultRef, { 'react': score });
+            console.log('Test result updated in Firestore successfully!');
+        } catch (error) {
+            console.error('Error updating test result in Firestore:', error);
+        }
     };
 
     return (

@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { app, firestore, storage } from '@/firebaseConfig';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Label } from '@/components/ui/label'
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Label } from '@/components/ui/label';
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { getDownloadURL, ref } from "firebase/storage";
 
 const Page = () => {
@@ -24,56 +24,54 @@ const Page = () => {
     const [profileImageUrl, setProfileImageUrl] = useState('');
 
     useEffect(() => {
-        const fetchProfileImage = async () => {
-            try {
-                const auth = getAuth();
-                const currentUser = auth.currentUser;
-                const currentUserId = currentUser ? currentUser.uid : null;
-
-                if (currentUserId) {
-                    const imageRef = ref(storage,`files/${currentUserId}.jpg`);
-                    const imageUrl = await getDownloadURL(imageRef);
-                    setProfileImageUrl(imageUrl);
-                } else {
-                    console.error('No user is currently signed in.');
-                }
-            } catch (error) {
-                console.error('Error fetching profile image:', error);
+        const unsubscribe = onAuthStateChanged(getAuth(), async (user) => {
+            if (user) {
+                const currentUserId = user.uid;
+                fetchProfileImage(currentUserId);
+                fetchEmployeeData(currentUserId);
+            } else {
+                setEmployee({
+                    name: '',
+                    position: '',
+                    department: '',
+                    email: '',
+                    phoneNumber: '',
+                    startDate: ''
+                });
+                setProfileImageUrl('');
             }
-        };
+        });
 
-        fetchProfileImage();
+        return unsubscribe;
     }, []);
 
-    useEffect(() => {
-        const fetchEmployeeData = async () => {
-            try {
-                const auth = getAuth();
-                const currentUser = auth.currentUser;
-                const currentUserId = currentUser ? currentUser.uid : null;
+    const fetchProfileImage = async (currentUserId) => {
+        try {
+            const imageRef = ref(storage, `files/${currentUserId}.jpg`);
+            const imageUrl = await getDownloadURL(imageRef);
+            setProfileImageUrl(imageUrl);
+        } catch (error) {
+            console.error('Error fetching profile image:', error);
+        }
+    };
 
-                if (currentUserId) {
-                    const employeeDocRef = doc(firestore, 'employees', currentUserId);
-                    const employeeSnapshot = await getDoc(employeeDocRef);
+    const fetchEmployeeData = async (currentUserId) => {
+        try {
+            const employeeDocRef = doc(firestore, 'employees', currentUserId);
+            const employeeSnapshot = await getDoc(employeeDocRef);
 
-                    if (employeeSnapshot.exists()) {
-                        const employeeData = employeeSnapshot.data();
-                        setEmployee(employeeData);
-                    } else {
-                        console.log('No employee data found for the current user.');
-                    }
-                } else {
-                    console.error('No user is currently signed in.');
-                }
-            } catch (error) {
-                console.error('Error fetching employee data:', error);
+            if (employeeSnapshot.exists()) {
+                const employeeData = employeeSnapshot.data();
+                setEmployee(employeeData);
+            } else {
+                console.log('No employee data found for the current user.');
             }
-        };
+        } catch (error) {
+            console.error('Error fetching employee data:', error);
+        }
+    };
 
-        fetchEmployeeData();
-    }, []);
-
-    const handleChange = (e: any) => {
+    const handleChange = (e) => {
         setEmployee({ ...employee, [e.target.name]: e.target.value });
     };
 
@@ -90,7 +88,6 @@ const Page = () => {
 
     const handleSave = async () => {
         try {
-            // Get the current user ID
             const auth = getAuth();
             const currentUser = auth.currentUser;
             const currentUserId = currentUser ? currentUser.uid : null;
@@ -100,10 +97,7 @@ const Page = () => {
                 return;
             }
 
-            // Create a reference to the document with the current user ID
             const employeeDocRef = doc(firestore, 'employees', currentUserId);
-
-            // Update the document with the employee data
             await setDoc(employeeDocRef, employee);
 
             console.log('Employee data saved successfully!');
