@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { app, firestore } from '@/firebaseConfig';
@@ -100,14 +100,14 @@ const page = () => {
 
     const handleCheckboxChange = (optionIndex: number, questionIndex: number) => {
         const updatedAnswers = [...answers];
-        updatedAnswers[questionIndex] = `${optionIndex}`;
+        updatedAnswers[questionIndex] = `${optionIndex}`; // Convert optionIndex to string
         setAnswers(updatedAnswers);
     };
 
     const calculateScore = () => {
         let currentScore = 0;
         questions.forEach((question, index) => {
-            if (answers[index] === question.answer) {
+            if (answers[index] === `${question.options.indexOf(question.answer)}`) {
                 currentScore++;
             }
         });

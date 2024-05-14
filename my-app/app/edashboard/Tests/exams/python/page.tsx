@@ -150,14 +150,14 @@ const PythonTestPage = () => {
 
     const handleCheckboxChange = (optionIndex: number, questionIndex: number) => {
         const updatedAnswers = [...answers];
-        updatedAnswers[questionIndex] = `${optionIndex}`;
+        updatedAnswers[questionIndex] = `${optionIndex}`; // Convert optionIndex to string
         setAnswers(updatedAnswers);
     };
 
     const calculateScore = () => {
         let currentScore = 0;
         questions.forEach((question, index) => {
-            if (answers[index] === question.answer) {
+            if (answers[index] === `${question.options.indexOf(question.answer)}`) {
                 currentScore++;
             }
         });
@@ -170,6 +170,7 @@ const PythonTestPage = () => {
             console.error('No user is currently signed in.');
         }
     };
+
 
     const updateTestResultInFirestore = async (score: number) => {
         try {

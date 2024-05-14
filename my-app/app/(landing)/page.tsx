@@ -47,8 +47,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <HeroHighlight className="flex-1 mr-8">
+    <div className="flex min-h-screen items-center justify-center p-2">
+      <HeroHighlight className="flex-1 ">
         <motion.h1
           initial={{
             opacity: 0,
@@ -64,9 +64,9 @@ export default function Home() {
           }}
           className="text-2xl px-4 md:text-2xl lg:text-3xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto"
         >
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5">
+          <div className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5">
             Task Allocator
-          </h1>
+          </div>
           With Task Allocator, efficiency is real. Fair distribution is within reach. It's a perfect match, of {" "}
           <Highlight className="text-black dark:text-white">
             skills, of workload, of availability.
