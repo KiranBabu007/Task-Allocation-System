@@ -19,6 +19,7 @@ const links = [
     icon: DocumentDuplicateIcon,
   },
   { name: 'Projects ', href: '/edashboard/projects', icon: UserGroupIcon },
+ 
 ];
 
 export default function NavLinks() {

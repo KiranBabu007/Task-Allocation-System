@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getDownloadURL, ref } from "firebase/storage";
-
+import ChatBot from '@/components/ui/ChatBot';
 const Page = () => {
     const [employee, setEmployee] = useState({
         name: '',
@@ -110,8 +110,8 @@ const Page = () => {
         <div className="flex flex-col items-center justify-center min-h-screen">
             <Card className="w-[100%] ">
                 <CardHeader className="relative">
-                    <div className="bg-blue-500 h-32 rounded-t-lg">
-                        <div className='h-full w-32'>
+                    <div className="bg-blue-500 h-32 rounded-lg relative">
+                        <div className='h-full w-32 absolute z-10'>
                             <Avatar className='h-30 w-30'>
                                 {profileImageUrl ? (
                                     <AvatarImage className='object-contain' src={profileImageUrl} alt="User Profile" />
@@ -120,11 +120,17 @@ const Page = () => {
                                 )}
                             </Avatar>
                         </div>
+                        <div
+                            className="absolute inset-0 bg-cover bg-center rounded-lg"
+                            style={{
+                                backgroundImage: "url('./profile.png')"
+                            }}
+                        />
                     </div>
                 </CardHeader>
                 <CardContent className="mt-8">
-                    <div className="space-y-4">
-                        <div className="flex items-center ">
+                    <div className="space-y-4 flex flex-col items-start ">
+                        <div className="flex items-center justify-between  ">
                             <Label htmlFor="name" className="text-right  m-4">
                                 Name
                             </Label>
@@ -135,7 +141,7 @@ const Page = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="flex items-center ">
+                        <div className="flex items-center gap-5 ">
                             <Label htmlFor="position" className=" m-4">
                                 Position
                             </Label>
@@ -201,6 +207,7 @@ const Page = () => {
                     </Button>
                 </CardFooter>
             </Card>
+            <ChatBot />
         </div>
     );
 };
