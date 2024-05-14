@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getFirestore, doc, onSnapshot } from "firebase/firestore";
+import { getFirestore, doc, onSnapshot, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export function SparklesPreview() {
@@ -43,12 +43,36 @@ export function SparklesPreview() {
     return () => unsubscribeAuth();
   }, []);
 
+  const handleFinished = async () => {
+    try {
+      const auth = getAuth();
+      const db = getFirestore();
+      const userId = auth.currentUser?.uid;
+
+      if (userId && projectData) {
+        // Delete the document from the "employeeprojects" collection
+        await deleteDoc(doc(db, "employeeprojects", userId));
+
+        // Find and delete the corresponding document from the "projects" collection
+        const projectsCollection = collection(db, "projects");
+        const projectQuery = query(projectsCollection, where("name", "==", projectData.projectName));
+        const querySnapshot = await getDocs(projectQuery);
+
+        querySnapshot.forEach((doc) => {
+          deleteDoc(doc.ref);
+        });
+
+        setProjectData(null);
+      }
+    } catch (error) {
+      console.error("Error deleting documents:", error);
+    }
+  };
+
   return (
     <div className="h-[40rem] relative w-full bg-white flex flex-col items-center justify-center overflow-hidden rounded-md">
       <div className="relative z-20 w-full flex justify-center mb-8">
-        <h1 className="text-4xl font-bold text-center mt-0 fixed top-0 w-full py-8">
-          Current Tasks
-        </h1>
+        <h1 className="text-4xl font-bold text-center mt-0 fixed top-0 w-full py-8">Current Tasks</h1>
       </div>
       <div className="relative z-20 flex flex-col space-y-4 justify-between">
         {isLoading ? (
@@ -74,6 +98,12 @@ export function SparklesPreview() {
                   ></div>
                 </div>
               </div>
+              <button
+                className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                onClick={handleFinished}
+              >
+                Finished
+              </button>
             </div>
           </>
         ) : (
