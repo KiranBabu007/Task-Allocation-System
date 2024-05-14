@@ -15,7 +15,6 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -85,8 +84,7 @@ export default function Home() {
           Welcome to Task Allocator
         </h2>
         <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-          Login to task allocator if you can because we don't have a login flow
-          yet
+          Login to task allocator for company and employee
         </p>
         <Tabs defaultValue="employee" className="w-[400px] mt-8">
           <TabsList className="grid w-full grid-cols-2">
