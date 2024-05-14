@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useEffect } from 'react';
 import { app, firestore } from '@/firebaseConfig';
-import { addDoc, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, updateDoc, doc, setDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const skillOptions = ['React', 'Java', 'C', 'Python', 'AI/ML', 'JavaScript'];
@@ -61,6 +61,20 @@ const assignProject = async (project, setProjects) => {
                 return prevProject;
             });
         });
+
+        // Insert assigned employees into the employeeprojects collection
+        const employeeprojectsCollection = collection(firestore, 'employeeprojects');
+
+        // Loop through assigned employees and add their data to the collection
+        for (const userId in assignedEmployees) {
+            const employeeData = {
+                projectId: project.id,
+                projectName: project.name,
+                skills: assignedEmployees[userId].skills
+            };
+            const docRef = doc(employeeprojectsCollection, userId);
+            await setDoc(docRef, employeeData);
+        }
 
     } catch (error) {
         console.error('Error assigning project:', error);
