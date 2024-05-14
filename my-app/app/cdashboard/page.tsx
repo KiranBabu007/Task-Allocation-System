@@ -54,7 +54,7 @@ const CompanyProfilePage = () => {
         fetchCompanyData();
     }, []);
 
-    const handleChange = (e) => {
+    const handleChange = (e:any) => {
         setCompanyDetails({ ...companyDetails, [e.target.name]: e.target.value });
     };
 
